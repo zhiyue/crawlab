@@ -11,13 +11,11 @@ pipeline {
                 echo "Running Setup..."
                 script {
                     if (env.GIT_BRANCH == 'develop') {
-                        env.MODE = 'develop'
                         env.TAG = 'develop'
-                        env.BASE_URL = '/dev'
+                        env.DOCKERFILE = 'Dockerfile.local'
                     } else if (env.GIT_BRANCH == 'master') {
-                        env.MODE = 'production'
                         env.TAG = 'master'
-                        env.BASE_URL = '/demo'
+                        env.DOCKERFILE = 'Dockerfile.local'
                     } 
                 }
             }
@@ -26,7 +24,7 @@ pipeline {
             steps {
                 echo "Building..."
                 sh """
-                docker build -t tikazyq/crawlab:${ENV:TAG} -f Dockerfile.local .
+                docker build -t tikazyq/crawlab:${ENV:TAG} -f ${ENV:DOCKERFILE} .
                 """
             }
         }
@@ -39,12 +37,18 @@ pipeline {
             steps {
                 echo 'Deploying....'
                 sh """
-                echo ${ENV:GIT_BRANCH}
-                """
-                sh """
+                # 重启docker compose
                 cd ./jenkins/${ENV:GIT_BRANCH}
-                docker-compose stop | true
-                docker-compose up -d
+                docker-compose down | true
+                docker-compose up -d | true
+                """
+            }
+        }
+        stage('Cleanup') {
+            steps {
+                echo 'Cleanup...'
+                sh """
+                docker rmi -f `docker images | grep '<none>' | grep -v IMAGE | awk '{ print \$3 }' | xargs`
                 """
             }
         }

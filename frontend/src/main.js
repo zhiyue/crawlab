@@ -13,7 +13,11 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
-import { FontAwesomeIcon, FontAwesomeLayers, FontAwesomeLayersText } from '@fortawesome/vue-fontawesome'
+import {
+  FontAwesomeIcon,
+  FontAwesomeLayers,
+  FontAwesomeLayersText
+} from '@fortawesome/vue-fontawesome'
 
 import 'codemirror/lib/codemirror.js'
 import { codemirror } from 'vue-codemirror-lite'
@@ -31,6 +35,10 @@ import request from './api/request'
 import i18n from './i18n'
 import utils from './utils'
 
+// vue-tour
+import VueTour from 'vue-tour'
+import 'vue-tour/dist/vue-tour.css'
+
 // code mirror
 Vue.use(codemirror)
 
@@ -45,15 +53,18 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.component('font-awesome-layers', FontAwesomeLayers)
 Vue.component('font-awesome-layers-text', FontAwesomeLayersText)
 
+// vue-tour
+Vue.use(VueTour)
+
 Vue.config.productionTip = false
 
 // 百度统计
 if (localStorage.getItem('useStats') !== '0') {
   window._hmt = window._hmt || [];
-  (function () {
-    let hm = document.createElement('script')
+  (function() {
+    const hm = document.createElement('script')
     hm.src = 'https://hm.baidu.com/hm.js?c35e3a563a06caee2524902c81975add'
-    let s = document.getElementsByTagName('script')[0]
+    const s = document.getElementsByTagName('script')[0]
     s.parentNode.insertBefore(hm, s)
   })()
 }
